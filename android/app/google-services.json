@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "778128624247",
+    "project_id": "csvimport-ce073",
+    "storage_bucket": "csvimport-ce073.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778128624247:android:e72f1e34041ef87ae59472",
+        "android_client_info": {
+          "package_name": "com.example.csvfirebaseimport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778128624247-vn155eq20clolhlbbo1hc2dqmetsdii8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLOGRF8qymxllYkBzFiR6tZUaaKw1WxvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778128624247-vn155eq20clolhlbbo1hc2dqmetsdii8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
