@@ -1,7 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 void main() async {
@@ -15,61 +15,41 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CSV to Firebase',
-      home: CSVToFirebaseScreen(),
+      home: Scaffold(
+        appBar: AppBar(title: Text('CSV to Firestore')),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () async {
+              List<List<dynamic>> csvData = await parseCSV();
+              await addDataToFirestore(csvData);
+              print('Data added to Firestore');
+            },
+            child: Text('Upload CSV to Firestore'),
+          ),
+        ),
+      ),
     );
   }
-}
 
-class CSVToFirebaseScreen extends StatelessWidget {
-  Future<List<List<dynamic>>> readCsvData() async {
-    debugPrint("789");
-
-    final String csvString = await rootBundle.loadString('assets/data.csv');
-    final List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(csvString);
-    return rowsAsListOfValues;
+  Future<List<List<dynamic>>> parseCSV() async {
+    final String data = await rootBundle.loadString('assets/data.csv');
+    final List<List<dynamic>> csvTable = CsvToListConverter().convert(data);
+    return csvTable;
   }
 
-  Future<void> uploadDataToFirebase(List<List<dynamic>> csvData) async {
-    debugPrint("741");
+  Future<void> addDataToFirestore(List<List<dynamic>> csvData) async {
+    final CollectionReference collection = FirebaseFirestore.instance.collection('user');
 
-    final DatabaseReference databaseReference =  FirebaseDatabase.instance.reference().child("users");
-
-    for (final row in csvData) {
-      // Assuming your CSV columns are organized as: column1, column2, column3
-      final String column1Value = row[0];
-      final String column2Value = row[1];
-      final String column3Value = row[2];
-
-      final newEntry = <String, dynamic>{
-        'column1': column1Value,
-        'column2': column2Value,
-        'column3': column3Value,
+    for (var row in csvData) {
+      final Map<String, dynamic> data = {
+        'author_name': row[0],
+        'chapter': row[1],
+        'chapter_image': row[2],
+        'chapter_name': row[3],
+        'subject_id': row[4],
       };
 
-      await databaseReference.push().set(newEntry);
+      await collection.add(data);
     }
-  }
-
-  Future<void> importCsvAndUpload() async {
-    debugPrint("456");
-    final csvData = await readCsvData();
-    await uploadDataToFirebase(csvData);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('CSV to List Converter'),
-        ),
-        body: Center(
-          child: InkWell(
-              onTap: () {
-                debugPrint("123");
-                importCsvAndUpload();
-              },
-              child: Text("data")),
-        ));
   }
 }
